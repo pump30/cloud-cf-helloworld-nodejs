@@ -30,6 +30,6 @@ steps:
 - script: cf login -a $(api-url) -u $(dev-user) -p $(dev-password) -o $(dev-org) -s $(space)
   displayName: Login into CF Space
 
-- script: cf push --random-route
+- script: cf push sapcpcfhw --random-route
   displayName: Deploy to CF Space
 
