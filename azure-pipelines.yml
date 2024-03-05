@@ -1,0 +1,35 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- 12_hana
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- task: CmdLine@2
+  inputs:
+    script: 'npm install -g mbt @sap/cds-dk'
+  displayName: Install CAP Build Tools and CAP Runtime Env
+
+
+- script : |
+    wget -q -O - https://packages.cloudfoundry.org/debian/cli.cloudfoundry.org.key | sudo apt-key add -
+    echo "deb https://packages.cloudfoundry.org/debian stable main" | sudo tee /etc/apt/sources.list.d/cloudfoundry-cli.list
+  displayName: Add the Cloud Foundry Foundation public key and package repository to your system by running
+
+- script : sudo apt-get update
+  displayName: Update your local package index by running
+
+- script : sudo apt-get install cf8-cli
+  displayName: Install CF
+
+- script: cf login -a $(api-url) -u $(dev-user) -p $(dev-password) -o $(dev-org) -s $(space)
+  displayName: Login into CF Space
+
+- script: cf push sapcpcfhw --random-route
+  displayName: Deploy to CF Space
+
